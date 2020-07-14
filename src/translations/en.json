@@ -1,2 +1,4 @@
 {
+    "payer.PayerPicker.label": "Payer",
+    "payer.PayerPicker.null": "Any"
 }

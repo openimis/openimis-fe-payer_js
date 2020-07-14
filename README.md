@@ -1,5 +1,5 @@
-# openIMIS Frontend Template module
-This repository holds the files of the openIMIS Frontend Template module.
+# openIMIS Frontend Payer module
+This repository holds the files of the openIMIS Frontend Payer module.
 It is dedicated to be bootstrap development of [openimis-fe_js](https://github.com/openimis/openimis-fe_js) modules, providing an empty (yet deployable) module.
 
 Please refer to [openimis-fe_js](https://github.com/openimis/openimis-fe_js) to see how to build and and deploy (in developement or server mode).
