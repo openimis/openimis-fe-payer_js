@@ -5,7 +5,7 @@ import {
 import _ from "lodash";
 import _uuid from "lodash-uuid";
 
-export function fetchPayers(mm) {
+export function fetchPayers(mm, filters = []) {
   const payload = formatPageQuery(
     "payers",
     null,
