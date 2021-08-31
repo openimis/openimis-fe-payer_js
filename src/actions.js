@@ -16,7 +16,6 @@ export function fetchPayers(mm,  hf, str, prev) {
   if (_.isEqual(filters, prev)) {
     return (dispatch) => { }
   }
-  console.log('ICI')
   const payload = formatPageQuery(
     "payers",
     filters,
