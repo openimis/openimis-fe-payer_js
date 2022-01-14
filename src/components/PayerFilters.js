@@ -6,6 +6,7 @@ import {
   useTranslations,
   useModulesManager,
   useDebounceCb,
+  decodeId,
 } from "@openimis/fe-core";
 import { FormControlLabel, Grid, Checkbox } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -59,7 +60,9 @@ const PayerFilters = (props) => {
                 pubRef="location.RegionPicker"
                 value={filters.location?.value?.parent ?? filters.location?.value}
                 withNull={true}
-                onChange={(value) => onChangeFilters([{ id: "location", value: value, filter: value?.uuid }])}
+                onChange={(value) =>
+                  onChangeFilters([{ id: "location", value: value, filter: value?.id ? decodeId(value.id) : null }])
+                }
               />
             </Grid>
           }
@@ -79,7 +82,7 @@ const PayerFilters = (props) => {
                   if (!value) {
                     value = filters.location?.value?.parent;
                   }
-                  onChangeFilters([{ id: "location", value: value, filter: value?.uuid }]);
+                  onChangeFilters([{ id: "location", value: value, filter: value?.id ? decodeId(value.id) : null }]);
                 }}
               />
             </Grid>

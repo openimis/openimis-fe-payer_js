@@ -62,7 +62,7 @@ export const usePayersQuery = ({ filters }, config) => {
     `
   query usePayersQuery (
     $first: Int, $last: Int, $before: String, $after: String, $phone: String, $name: String,
-    $email: String, $location: UUID, $showHistory: Boolean, $search: String, $type: String,
+    $email: String, $location: Int, $showHistory: Boolean, $search: String, $type: String,
     ) {
     payers (
       first: $first, last: $last, before: $before, after: $after, phone_Icontains: $phone, showHistory: $showHistory, type: $type
