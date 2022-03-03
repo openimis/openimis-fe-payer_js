@@ -98,6 +98,64 @@ export const usePayersQuery = ({ filters }, config) => {
   return { isLoading, error, data: { payers, pageInfo }, refetch };
 };
 
+export const usePayerFundingsQuery = ({ variables }, config) => {
+  const { isLoading, error, data, refetch } = useGraphqlQuery(
+    `
+  query usePayerFundingsQuery (
+    $first: Int, $last: Int, $before: String, $after: String, $payerId: UUID!
+    ) {
+    payer (uuid: $payerId) {
+      fundings (first: $first, last: $last, before: $before, after: $after) {
+        edges {
+          node {
+            uuid
+            amount
+            payDate
+            product {
+              name
+            }
+            receipt
+          }
+        }
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          endCursor
+        }
+        totalCount
+      }
+    }
+  }
+  `,
+    variables,
+    config,
+  );
+
+  const fundings = useMemo(() => (data ? _.map(data.payer?.fundings?.edges, "node") : []), [data]);
+  const pageInfo = useMemo(
+    () => (data ? Object.assign({ totalCount: data.payer?.fundings?.totalCount }, data.payer?.fundings?.pageInfo) : {}),
+    [data],
+  );
+  return { isLoading, error, data: { fundings, pageInfo }, refetch };
+};
+
+export const useAddFundingMutation = () => {
+  const mutation = useGraphqlMutation(
+    `
+    mutation useAddFundingMutation($input: AddFundingMutationInput!) {
+      addFunding(input: $input) {
+        internalId
+        clientMutationId
+      }
+    }
+  `,
+    { onSuccess: (data) => data?.addFunding },
+  );
+
+  return mutation;
+};
+
 export const usePayerUpdateMutation = () => {
   const mutation = useGraphqlMutation(
     `
