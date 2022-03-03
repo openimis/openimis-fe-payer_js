@@ -2,6 +2,7 @@ import React from "react";
 
 import { Form } from "@openimis/fe-core";
 import MainPanelForm from "./MainPanelForm";
+import FundingPanel from "./FundingPanel";
 import ReplayIcon from "@material-ui/icons/Replay";
 
 const PayerForm = (props) => {
@@ -17,6 +18,7 @@ const PayerForm = (props) => {
       edited={payer}
       edited_id={payer.uuid}
       HeadPanel={MainPanelForm}
+      Panels={[FundingPanel]}
       save={onSave}
       back={onBack}
       actions={[

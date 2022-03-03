@@ -4,6 +4,10 @@
   "payer.phone": "Phone",
   "payer.fax": "Fax",
   "payer.type": "Type",
+  "payer.payDate": "Pay date",
+  "payer.product": "Product",
+  "payer.amount": "Amount",
+  "payer.receipt": "Receipt",
 
   "payer.type.null": "Select a type",
   "payer.type.C": "Co-operative",
@@ -31,5 +35,9 @@
   "PayerFilters.showHistory": "Show Historical Values",
   "payer.updateMutation.label": "Update payer {name}",
   "payer.createMutation.label": "Create payer {name}",
-  "payer.deleteMutation.label": "Delete payer {name}"
+  "payer.deleteMutation.label": "Delete payer {name}",
+  "payer.FundingPanel.table.addFunding": "Add Funding",
+  "payer.FundingPanel.table.title": "Fundings",
+  "payer.AddFundingDialog.title": "Add Funding",
+  "payer.AddFundingDialog.submit": "Submit"
 }
