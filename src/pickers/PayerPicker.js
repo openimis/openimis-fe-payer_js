@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Autocomplete, useModulesManager, useTranslations } from "@openimis/fe-core";
 import { usePayersQuery } from "../hooks";
 

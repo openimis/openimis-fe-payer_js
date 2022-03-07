@@ -18,6 +18,7 @@ const DEFAULT_CONFIG = {
   "translations": [{ key: "en", messages: messages_en }],
   "refs": [
     { key: "payer.PayerPicker", ref: PayerPicker },
+    { key: "payer.PayerPicker.projection", ref: ["id", "uuid", "name"] },
     { key: "payer.PayerTypePicker", ref: PayerTypePicker },
     { key: "payer.payersNew", ref: "payer/payers/new" },
     { key: "payer.payersOverview", ref: "payer/payers/overview" },
