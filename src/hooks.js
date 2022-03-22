@@ -2,6 +2,8 @@ import { useMemo } from "react";
 import { useGraphqlMutation, useGraphqlQuery, useModulesManager } from "@openimis/fe-core";
 import _ from "lodash";
 
+export const PAYER_PICKER_PROJECTION = ["id", "uuid", "name"];
+
 export const GRAPHQL_USE_PAYER_PAYER_FRAGMENT = `
   fragment PayerFragment on PayerGQLType {
     id
