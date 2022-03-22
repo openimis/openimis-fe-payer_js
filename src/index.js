@@ -11,6 +11,7 @@ import {
   usePayersQuery,
   usePayerQuery,
   GRAPHQL_USE_PAYER_PAYER_FRAGMENT,
+  PAYER_PICKER_PROJECTION
 } from "./hooks";
 import { RIGHT_PAYERS } from "./constants";
 
@@ -18,7 +19,7 @@ const DEFAULT_CONFIG = {
   "translations": [{ key: "en", messages: messages_en }],
   "refs": [
     { key: "payer.PayerPicker", ref: PayerPicker },
-    { key: "payer.PayerPicker.projection", ref: ["id", "uuid", "name"] },
+    { key: "payer.PayerPicker.projection", ref: PAYER_PICKER_PROJECTION },
     { key: "payer.PayerTypePicker", ref: PayerTypePicker },
     { key: "payer.payersNew", ref: "payer/payers/new" },
     { key: "payer.payersOverview", ref: "payer/payers/overview" },
@@ -41,6 +42,13 @@ const DEFAULT_CONFIG = {
       route: "/payer/payers",
       filter: (rights) => rights.includes(RIGHT_PAYERS),
     },
+  ],
+  "invoice.SubjectAndThirdpartyPicker": [
+    {
+      type: "payer",
+      picker: PayerPicker,
+      pickerProjection: PAYER_PICKER_PROJECTION,
+    }
   ],
 };
 
