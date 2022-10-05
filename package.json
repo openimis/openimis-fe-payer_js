@@ -1,6 +1,6 @@
 {
   "name": "@openimis/fe-payer",
-  "version": "1.3.0",
+  "version": "1.4.0-rc4",
   "license": "AGPL-3.0-only",
   "description": "openIMIS Frontend Payment module",
   "repository": "openimis/openimis-fe-payer_js",

@@ -1,95 +1,45 @@
-import React, { Component, Fragment } from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { withTheme, withStyles } from "@material-ui/core/styles";
-import { injectIntl } from "react-intl";
-import _debounce from "lodash/debounce";
-import _ from "lodash";
-import { fetchPayers } from "../actions";
-import { formatMessage, AutoSuggestion, ProgressOrError, withModulesManager } from "@openimis/fe-core";
+import React, { useState } from "react";
+import { Autocomplete, useModulesManager, useTranslations } from "@openimis/fe-core";
+import { usePayersQuery } from "../hooks";
 
-const styles = (theme) => ({
-  label: {
-    color: theme.palette.primary.main,
-  },
-});
+const PayerPicker = (props) => {
+  const {
+    onChange,
+    readOnly = false,
+    required = false,
+    withLabel = true,
+    value,
+    label,
+    filterOptions,
+    filterSelectedOptions,
+    placeholder,
+    multiple = false,
+  } = props;
+  const modulesManager = useModulesManager();
+  const { formatMessage } = useTranslations("payer.PayerPicker", modulesManager);
+  const [searchString, setSearchString] = useState(null);
+  const { isLoading, data } = usePayersQuery({ filters: { name: searchString, first: 10 } }, { skip: true });
 
-class PayerPicker extends Component {
-  constructor(props) {
-    super(props);
-    this.selectThreshold = props.modulesManager.getConf("fe-payer", "PayerPicker.selectThreshold", 10);
-  }
+  const options = data?.payers ?? [];
 
-  formatSuggestion = (p) => (!p ? "" : `${p.name || ""}`);
-
-  onSuggestionSelected = (v) => this.props.onChange(v, this.formatSuggestion(v));
-
-  getSuggestions = (str) =>
-    !!str &&
-    str.length >= this.props.modulesManager.getConf("fe-payer", "payersMinCharLookup", 2) &&
-    this.props.fetchPayers(
-      this.props.modulesManager,
-      this.props.userHealthFacilityFullPath,
-      str,
-      this.props.fetchedPayers,
-    );
-
-  debouncedGetSuggestion = _.debounce(
-    this.getSuggestions,
-    this.props.modulesManager.getConf("fe-payer", "debounceTime", 800),
+  return (
+    <Autocomplete
+      multiple={multiple}
+      required={required}
+      placeholder={placeholder}
+      label={label ?? formatMessage("label")}
+      withLabel={withLabel}
+      readOnly={readOnly}
+      options={options}
+      isLoading={isLoading}
+      value={value}
+      getOptionLabel={(o) => o?.name}
+      onChange={onChange}
+      filterOptions={filterOptions}
+      filterSelectedOptions={filterSelectedOptions}
+      onInputChange={setSearchString}
+    />
   );
-
-  render() {
-    const {
-      intl,
-      value,
-      reset,
-      readOnly = false,
-      required = false,
-      payers,
-      fetchingPayers,
-      errorPayers,
-      withNull = false,
-      nullLabel = null,
-      withLabel = true,
-      label,
-    } = this.props;
-    return (
-      <Fragment>
-        <ProgressOrError progress={fetchingPayers} error={errorPayers} />
-        {!fetchingPayers && !errorPayers && (
-          <AutoSuggestion
-            module="payer"
-            items={payers}
-            label={!!withLabel && (label || formatMessage(intl, "payer", "PayerPicker.label"))}
-            getSuggestions={this.debouncedGetSuggestion}
-            renderSuggestion={(a) => <span>{this.formatSuggestion(a)}</span>}
-            getSuggestionValue={this.formatSuggestion}
-            onSuggestionSelected={this.onSuggestionSelected}
-            value={value}
-            reset={reset}
-            readOnly={readOnly}
-            required={required}
-            selectThreshold={this.selectThreshold}
-            withNull={withNull}
-            nullLabel={nullLabel || formatMessage(intl, "payer", "payer.PayerPicker.null")}
-          />
-        )}
-      </Fragment>
-    );
-  }
-}
-
-const mapStateToProps = (state) => ({
-  userHealthFacilityFullPath: !!state.loc ? state.loc.userHealthFacilityFullPath : null,
-  payers: state.payer.payers,
-  fetchedPayers: state.payer.fetchedPayers,
-});
-
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ fetchPayers }, dispatch);
 };
 
-export default withModulesManager(
-  connect(mapStateToProps, mapDispatchToProps)(injectIntl(withTheme(withStyles(styles)(PayerPicker)))),
-);
+export default PayerPicker;
