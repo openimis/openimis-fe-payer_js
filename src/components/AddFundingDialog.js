@@ -47,7 +47,7 @@ const AddFundingDialog = (props) => {
                 pubRef="product.ProductPicker"
                 value={form.product}
                 required
-                locationId={decodeId(payer.location.id)}
+                locationId={payer && payer.location ? decodeId(payer.location.id) : null }
                 onChange={(product) => setForm({ ...form, product })}
               />
             </Grid>

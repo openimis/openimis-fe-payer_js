@@ -32,6 +32,10 @@ const FundingPanel = (props) => {
     refetch();
   };
 
+  // We can't show the add funding panel until the payer is created
+  if (edited && !edited.id) {
+    return <></>;
+  }
   return (
     <>
       <Grid item xs={12}>
