@@ -123,8 +123,6 @@ const PayerSearcher = (props) => {
         rowIdentifier={(r) => r.uuid}
         filtersToQueryParams={filtersToQueryParam}
         itemFormatters={itemFormatters}
-        rowsPerPageOptions={1}
-        defaultPageSize={1}
       />
     </>
   );
