@@ -16,11 +16,22 @@ const PayerSearcher = (props) => {
   const [payerToDelete, setPayerToDelete] = useState(null);
   const { data, isLoading, error, refetch } = usePayersQuery({ filters }, { skip: true, keepStale: true });
   const filtersToQueryParam = useCallback((state) => {
-    const params = {
-      first: state.pageSize,
-      after: state.afterCursor,
-      before: state.beforeCursor,
-    };
+    let params = {};
+    if (!state.beforeCursor && !state.afterCursor) {
+      params = {first: state.pageSize};
+    }
+    if (state.afterCursor) {
+      params = {
+        after: state.afterCursor,
+        first: state.pageSize,
+      }
+    }
+    if (state.beforeCursor) {
+      params = {
+        before: state.beforeCursor,
+        last: state.pageSize,
+      }
+    }
     Object.entries(state.filters).forEach(([filterKey, filter]) => {
       params[filterKey] = filter.filter ?? filter.value;
     });
