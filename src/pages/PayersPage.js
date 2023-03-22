@@ -9,7 +9,7 @@ import {
 } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/styles";
 import { useSelector, useDispatch } from "react-redux";
-import { RIGHT_PAYERS_ADD, RIGHT_PAYERS_DELETE } from "../constants";
+import { RIGHT_PAYERS_ADD, RIGHT_PAYERS_DELETE, MODULE_NAME } from "../constants";
 import { usePayerDeleteMutation } from "../hooks";
 import { Fab } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
@@ -42,8 +42,7 @@ const PayersPage = (props) => {
   const canDelete = (payer) => rights.includes(RIGHT_PAYERS_DELETE) && !payer.validityTo;
 
   useEffect(() => {
-    const moduleName = "payer";
-    if (module !== moduleName) dispatch(clearCurrentPaginationPage());
+    if (module !== MODULE_NAME) dispatch(clearCurrentPaginationPage());
   }, [module]);
 
   return (
