@@ -1,7 +1,14 @@
-import React from "react";
-import { useTranslations, useModulesManager, historyPush, withTooltip, withHistory } from "@openimis/fe-core";
+import React, { useEffect } from "react";
+import {
+  useTranslations,
+  useModulesManager,
+  historyPush,
+  withTooltip,
+  withHistory,
+  clearCurrentPaginationPage,
+} from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/styles";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RIGHT_PAYERS_ADD, RIGHT_PAYERS_DELETE } from "../constants";
 import { usePayerDeleteMutation } from "../hooks";
 import { Fab } from "@material-ui/core";
@@ -15,9 +22,11 @@ const useStyles = makeStyles((theme) => ({
 
 const PayersPage = (props) => {
   const { history } = props;
+  const dispatch = useDispatch();
   const modulesManager = useModulesManager();
   const { formatMessage, formatMessageWithValues } = useTranslations("payer", modulesManager);
   const rights = useSelector((state) => state.core?.user?.i_user?.rights ?? []);
+  const module = useSelector((state) => state.core?.savedPagination?.module);
   const classes = useStyles();
   const deleteMutation = usePayerDeleteMutation();
   const onDoubleClick = (payer, newTab) =>
@@ -31,6 +40,11 @@ const PayersPage = (props) => {
   };
 
   const canDelete = (payer) => rights.includes(RIGHT_PAYERS_DELETE) && !payer.validityTo;
+
+  useEffect(() => {
+    const moduleName = "payer";
+    if (module !== moduleName) dispatch(clearCurrentPaginationPage());
+  }, [module]);
 
   return (
     <div className={classes.page}>
