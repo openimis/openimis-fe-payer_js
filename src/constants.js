@@ -3,4 +3,6 @@ export const RIGHT_PAYERS_ADD = 121802;
 export const RIGHT_PAYERS_DELETE = 121804;
 export const RIGHT_PAYERS_EDIT = 121803;
 
+export const MODULE_NAME = "payer";
+
 export const PAYER_TYPES = ["C", "D", "G", "L", "O", "P"];
