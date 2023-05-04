@@ -67,6 +67,7 @@ const AddFundingDialog = (props) => {
                 label="receipt"
                 name="receipt"
                 value={form.receipt}
+                required
                 onChange={(receipt) => setForm({ ...form, receipt })}
               />
             </Grid>
