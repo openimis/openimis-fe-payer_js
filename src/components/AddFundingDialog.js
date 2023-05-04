@@ -76,6 +76,7 @@ const AddFundingDialog = (props) => {
                 pubRef="core.DatePicker"
                 value={form.payDate}
                 module="payer"
+                required
                 label="payDate"
                 onChange={(payDate) => setForm({ ...form, payDate })}
               />
