@@ -67,6 +67,7 @@ const AddFundingDialog = (props) => {
                 label="receipt"
                 name="receipt"
                 value={form.receipt}
+                required
                 onChange={(receipt) => setForm({ ...form, receipt })}
               />
             </Grid>
@@ -75,6 +76,7 @@ const AddFundingDialog = (props) => {
                 pubRef="core.DatePicker"
                 value={form.payDate}
                 module="payer"
+                required
                 label="payDate"
                 onChange={(payDate) => setForm({ ...form, payDate })}
               />
