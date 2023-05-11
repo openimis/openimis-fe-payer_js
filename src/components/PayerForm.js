@@ -21,7 +21,7 @@ const PayerForm = (props) => {
       Panels={[FundingPanel]}
       save={onSave}
       back={onBack}
-      openDirty={onSave}
+      openDirty={onSave && !readOnly}
       actions={[
         {
           doIt: onReset,

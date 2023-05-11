@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
 const HEADERS = ["payer.payDate", "payer.product", "payer.receipt", "payer.amount"];
 
 const FundingPanel = (props) => {
-  const { edited } = props;
+  const { edited, readOnly } = props;
   const [pagination, setPagination] = useState({ page: 0, afterCursor: null, beforeCursor: null });
   const [isDialogOpen, setDialogOpen] = useState(false);
   const modulesManager = useModulesManager();
@@ -45,9 +45,11 @@ const FundingPanel = (props) => {
               <Typography variant="h6">{formatMessage("FundingPanel.table.title")}</Typography>
             </Grid>
             <Grid item>
-              <Button variant="contained" onClick={() => setDialogOpen(true)} startIcon={<AddIcon />}>
-                {formatMessage("FundingPanel.table.addFunding")}
-              </Button>
+              {!readOnly && (
+                <Button variant="contained" onClick={() => setDialogOpen(true)} startIcon={<AddIcon />}>
+                  {formatMessage("FundingPanel.table.addFunding")}
+                </Button>
+              )}
             </Grid>
           </Grid>
           <Grid container>
