@@ -1,5 +1,5 @@
 export const validatePayerForm = (values) => {
-  return Boolean(values.name && values.type && values.location && values.address);
+  return Boolean(values.name && values.type && values.location && values.address && !values.validityTo);
 };
 
 export const toFormValues = (payer) => payer;

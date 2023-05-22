@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import React, { useState } from "react";
+
 import { Grid, Paper, Typography, Button } from "@material-ui/core";
-import { Table, TextInput, PublishedComponent, useTranslations, useModulesManager } from "@openimis/fe-core";
-import { usePayerFundingsQuery } from "../hooks";
+import { makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
+
+import { Table, useTranslations, useModulesManager } from "@openimis/fe-core";
+import { usePayerFundingsQuery } from "../hooks";
 import AddFundingDialog from "./AddFundingDialog";
 
 const useStyles = makeStyles((theme) => ({
@@ -45,11 +47,14 @@ const FundingPanel = (props) => {
               <Typography variant="h6">{formatMessage("FundingPanel.table.title")}</Typography>
             </Grid>
             <Grid item>
-              {!readOnly && (
-                <Button variant="contained" onClick={() => setDialogOpen(true)} startIcon={<AddIcon />}>
-                  {formatMessage("FundingPanel.table.addFunding")}
-                </Button>
-              )}
+              <Button
+                variant="contained"
+                onClick={() => setDialogOpen(true)}
+                startIcon={<AddIcon />}
+                disabled={edited.validityTo || readOnly}
+              >
+                {formatMessage("FundingPanel.table.addFunding")}
+              </Button>
             </Grid>
           </Grid>
           <Grid container>
