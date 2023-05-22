@@ -10,7 +10,6 @@ import MainPanelForm from "./MainPanelForm";
 
 const useStyles = makeStyles((theme) => ({
   page: theme.page,
-  fab: theme.fab,
   locked: theme.page.locked,
 }));
 
