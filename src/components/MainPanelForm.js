@@ -28,7 +28,7 @@ const MainPanelForm = (props) => {
           value={edited.type}
           required
           readOnly={readOnly}
-          withNull
+          withNull={false}
           onChange={(type) => onEditedChanged({ ...edited, type })}
         />
       </Grid>
@@ -37,7 +37,7 @@ const MainPanelForm = (props) => {
           pubRef="location.RegionPicker"
           value={edited.location?.parent ?? edited.location}
           readOnly={readOnly}
-          withNull
+          withNull={false}
           required
           onChange={(location) => onEditedChanged({ ...edited, location })}
         />
@@ -47,7 +47,7 @@ const MainPanelForm = (props) => {
           region={edited.location?.parent || edited.location}
           value={edited.location?.parent ? edited.location : null}
           pubRef="location.DistrictPicker"
-          withNull={true}
+          withNull={false}
           readOnly={readOnly}
           onChange={(location) => onEditedChanged({ ...edited, location: location || edited.location?.parent })}
         />
@@ -79,13 +79,12 @@ const MainPanelForm = (props) => {
           onChange={(fax) => onEditedChanged({ ...edited, fax })}
         />
       </Grid>
-      <Grid item xs={6} className={classes.item}>
+      <Grid item xs={3} className={classes.item}>
         <TextInput
           module="payer"
           required
           label="address"
           multiline
-          rows={5}
           readOnly={readOnly}
           value={edited?.address ?? ""}
           onChange={(address) => onEditedChanged({ ...edited, address })}
