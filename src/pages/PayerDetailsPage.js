@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from "react";
-import clsx from "clsx";
-import { useModulesManager, useTranslations, withHistory, historyPush, ProgressOrError } from "@openimis/fe-core";
-import { makeStyles } from "@material-ui/styles";
 import { useSelector } from "react-redux";
+
+import { useModulesManager, useTranslations, withHistory, historyPush } from "@openimis/fe-core";
 import { RIGHT_PAYERS_ADD, RIGHT_PAYERS_EDIT } from "../constants";
 import { usePayerQuery, usePayerCreateMutation, usePayerUpdateMutation } from "../hooks";
 import { validatePayerForm, toFormValues, toInputValues } from "../utils";
 import PayerForm from "../components/PayerForm";
-
-const useStyles = makeStyles((theme) => ({
-  page: theme.page,
-  fab: theme.fab,
-  locked: theme.page.locked,
-}));
 
 const PayerDetailsPage = (props) => {
   const { match, history } = props;
@@ -27,7 +20,6 @@ const PayerDetailsPage = (props) => {
   const [isLocked, setLocked] = useState(false);
   const [isLoaded, setLoaded] = useState(false);
   const [values, setValues] = useState({});
-  const classes = useStyles();
 
   const createMutation = usePayerCreateMutation();
   const updateMutation = usePayerUpdateMutation();
@@ -65,13 +57,13 @@ const PayerDetailsPage = (props) => {
   }, [data, isLoading]);
 
   return (
-    <div className={clsx(classes.page, isLocked && classes.locked)}>
-      <ProgressOrError error={error} />
+    <>
       {isLoaded && (
         <PayerForm
           readOnly={
             !rights.some((x) => [RIGHT_PAYERS_ADD, RIGHT_PAYERS_EDIT].includes(x)) || isLocked || values.validityTo
           }
+          error={error}
           key={resetKey}
           onChange={setValues}
           payer={values}
@@ -81,7 +73,7 @@ const PayerDetailsPage = (props) => {
           onReset={onReset}
         />
       )}
-    </div>
+    </>
   );
 };
 

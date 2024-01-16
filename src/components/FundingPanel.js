@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import React, { useState } from "react";
+
 import { Grid, Paper, Typography, Button } from "@material-ui/core";
-import { Table, TextInput, PublishedComponent, useTranslations, useModulesManager } from "@openimis/fe-core";
-import { usePayerFundingsQuery } from "../hooks";
+import { makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
+
+import { Table, useTranslations, useModulesManager } from "@openimis/fe-core";
+import { usePayerFundingsQuery } from "../hooks";
 import AddFundingDialog from "./AddFundingDialog";
 
 const useStyles = makeStyles((theme) => ({
@@ -15,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
 const HEADERS = ["payer.payDate", "payer.product", "payer.receipt", "payer.amount"];
 
 const FundingPanel = (props) => {
-  const { edited } = props;
+  const { edited, readOnly } = props;
   const [pagination, setPagination] = useState({ page: 0, afterCursor: null, beforeCursor: null });
   const [isDialogOpen, setDialogOpen] = useState(false);
   const modulesManager = useModulesManager();
@@ -45,7 +47,12 @@ const FundingPanel = (props) => {
               <Typography variant="h6">{formatMessage("FundingPanel.table.title")}</Typography>
             </Grid>
             <Grid item>
-              <Button variant="contained" onClick={() => setDialogOpen(true)} startIcon={<AddIcon />}>
+              <Button
+                variant="contained"
+                onClick={() => setDialogOpen(true)}
+                startIcon={<AddIcon />}
+                disabled={edited.validityTo || readOnly}
+              >
                 {formatMessage("FundingPanel.table.addFunding")}
               </Button>
             </Grid>
