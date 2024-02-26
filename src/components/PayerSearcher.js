@@ -46,14 +46,14 @@ const PayerSearcher = (props) => {
   }, []);
 
   const getHeaders = useCallback(
-    () => [
+    (filters) => [
       "payer.name",
       "payer.type",
       "payer.address",
       "payer.region",
       "payer.district",
-      "payer.validityFrom",
-      "payer.validityTo",
+      filters?.showHistory?.value ? "payer.validityFrom" : null,
+      filters?.showHistory?.value ? "payer.validityTo" : null,
       "",
     ],
     [],
@@ -79,25 +79,24 @@ const PayerSearcher = (props) => {
       (p) => p.address,
       (p) => formatLocation(p.location?.parent ?? p.location),
       (p) => formatLocation(p.location?.parent ? p.location : null),
-      (p) => formatDateFromISO(p.validityFrom),
-      (p) => formatDateFromISO(p.validityTo),
-      (p) =>
-        !filters.showHistory?.value ? (
-          <div className={classes.horizontalButtonContainer}>
-            <Tooltip title={formatMessage("PayerSearcher.openNewTab")}>
-              <IconButton onClick={() => onDoubleClick(p, true)}>
-                <TabIcon />
+      (p) => (filters?.showHistory?.value ? formatDateFromISO(p.validityFrom) : null),
+      (p) => (filters?.showHistory?.value ? formatDateFromISO(p.validityTo) : null),
+      (p) => (
+        <div className={classes.horizontalButtonContainer}>
+          <Tooltip title={formatMessage("PayerSearcher.openNewTab")}>
+            <IconButton onClick={() => onDoubleClick(p, true)}>
+              <TabIcon />
+            </IconButton>
+          </Tooltip>
+          {canDelete(p) && (
+            <Tooltip title={formatMessage("PayerSearcher.deletePayerTooltip")}>
+              <IconButton onClick={() => setPayerToDelete(p)}>
+                <DeleteIcon />
               </IconButton>
             </Tooltip>
-            {canDelete(p) && (
-              <Tooltip title={formatMessage("PayerSearcher.deletePayerTooltip")}>
-                <IconButton onClick={() => setPayerToDelete(p)}>
-                  <DeleteIcon />
-                </IconButton>
-              </Tooltip>
-            )}
-          </div>
-        ) : null,
+          )}
+        </div>
+      ),
     ];
   }, []);
   return (
