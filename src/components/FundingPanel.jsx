@@ -24,8 +24,9 @@ const FundingPanel = (props) => {
   const { formatMessage, formatAmount, formatDateFromISO } = useTranslations("payer", modulesManager);
 
   const { data, error, isLoading, refetch } = usePayerFundingsQuery(
-    { variables: { payerId: edited.uuid, first: 10, after: pagination.afterCursor, before: pagination.beforeCursor } },
-    { keepStale: true },
+    { variables: { payerId: edited?.uuid, first: 10, after: pagination.afterCursor, before: pagination.beforeCursor } },
+    // payerId is a required variable: don't query until the payer exists (new payer form)
+    { keepStale: true, skip: !edited?.uuid },
   );
 
   const onDialogClose = () => {
