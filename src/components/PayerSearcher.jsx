@@ -1,4 +1,6 @@
 import React, { useState, useCallback } from "react";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 
 import { Tooltip, IconButton } from "@mui/material";
 import { GetIconComponent } from "@openimis/fe-core";
@@ -8,8 +10,18 @@ const DeleteIcon = GetIconComponent("Delete")
 import { styled } from "@mui/material/styles";
 
 import { Searcher, useTranslations, useModulesManager, ConfirmDialog } from "@openimis/fe-core";
-import { usePayersQuery } from "../hooks";
+import { fetchPayersSummaries } from "../actions";
 import PayerFilters from "./PayerFilters";
+
+// Each filter as the server expects it. The pane keeps emitting {id, value};
+// turning those into GraphQL filters belongs here rather than in the pane.
+const FILTER_TO_QUERY = {
+  name: (v) => (v ? `name_Icontains: "${v}"` : null),
+  email: (v) => (v ? `email_Icontains: "${v}"` : null),
+  phone: (v) => (v ? `phone_Icontains: "${v}"` : null),
+  type: (v) => (v ? `type: "${v}"` : null),
+  showHistory: (v) => (v ? `showHistory: true` : null),
+};
 
 const isRowDisabled = (_, row) => Boolean(row.validityTo);
 const formatLocation = (location) => (location ? `${location.code} - ${location.name}` : null);
@@ -22,30 +34,36 @@ const PayerSearcher = (props) => {
   const { cacheFiltersKey, onDelete, canDelete, onDoubleClick } = props;
   const modulesManager = useModulesManager();
   const { formatMessage, formatDateFromISO, formatMessageWithValues } = useTranslations("payer", modulesManager);
-  const [filters, setFilters] = useState({});
   const [payerToDelete, setPayerToDelete] = useState(null);
-  const { data, isLoading, error, refetch } = usePayersQuery({ filters }, { skip: true, keepStale: true });
+  const { payers, payersPageInfo, fetchingPayers, errorPayers, fetchPayersSummaries } = props;
+
+  const fetch = useCallback((params) => fetchPayersSummaries(modulesManager, params), [modulesManager]);
+
   const filtersToQueryParam = useCallback((state) => {
-    let params = {};
+    const prms = [];
     if (!state.beforeCursor && !state.afterCursor) {
-      params = {first: state.pageSize};
+      prms.push(`first: ${state.pageSize}`);
     }
     if (state.afterCursor) {
-      params = {
-        after: state.afterCursor,
-        first: state.pageSize,
-      }
+      prms.push(`after: "${state.afterCursor}"`, `first: ${state.pageSize}`);
     }
     if (state.beforeCursor) {
-      params = {
-        before: state.beforeCursor,
-        last: state.pageSize,
-      }
+      prms.push(`before: "${state.beforeCursor}"`, `last: ${state.pageSize}`);
     }
-    Object.entries(state.filters).forEach(([filterKey, filter]) => {
-      params[filterKey] = filter.filter ?? filter.value;
+    if (state.orderBy) {
+      prms.push(`orderBy: ["${state.orderBy}"]`);
+    }
+    Object.entries(state.filters ?? {}).forEach(([key, filter]) => {
+      // The location pane already hands over a decoded id in `filter`.
+      if (key === "location") {
+        if (filter.filter) prms.push(`location: ${filter.filter}`);
+        return;
+      }
+      const build = FILTER_TO_QUERY[key];
+      const clause = build ? build(filter.value) : filter.filter;
+      if (clause) prms.push(clause);
     });
-    return params;
+    return prms;
   }, []);
 
   const getHeaders = useCallback(
@@ -69,8 +87,12 @@ const PayerSearcher = (props) => {
 
   const onDeleteConfirm = (isConfirmed) => {
     if (isConfirmed) {
+      // No refetch here. It used to run straight after a mutation that was not
+      // awaited, so it raced the request; and with async mutations even the
+      // response only means "queued". The row is locked on its
+      // clientMutationId and Searcher re-reads the page once the journal
+      // reports success.
       onDelete(payerToDelete);
-      refetch();
     }
     setPayerToDelete(null);
   };
@@ -115,13 +137,13 @@ const PayerSearcher = (props) => {
       )}
       <Searcher
         module="payer"
-        tableTitle={formatMessageWithValues("PayerSearcher.tableTitle", { count: data?.pageInfo?.totalCount ?? 0 })}
+        tableTitle={formatMessageWithValues("PayerSearcher.tableTitle", { count: payersPageInfo?.totalCount ?? 0 })}
         cacheFiltersKey={cacheFiltersKey}
-        items={data.payers}
-        fetchingItems={isLoading}
-        errorItems={error}
-        itemsPageInfo={data.pageInfo}
-        fetch={setFilters}
+        items={payers}
+        fetchingItems={fetchingPayers}
+        errorItems={errorPayers}
+        itemsPageInfo={payersPageInfo}
+        fetch={fetch}
         onDelete={onDelete}
         canDelete={canDelete}
         onDoubleClick={onDoubleClick}
@@ -137,4 +159,14 @@ const PayerSearcher = (props) => {
   );
 };
 
-export default PayerSearcher;
+const mapStateToProps = (state) => ({
+  payers: state.payer.payers,
+  payersPageInfo: state.payer.payersPageInfo,
+  fetchingPayers: state.payer.fetchingPayers,
+  fetchedPayers: state.payer.fetchedPayers,
+  errorPayers: state.payer.errorPayers,
+});
+
+const mapDispatchToProps = (dispatch) => bindActionCreators({ fetchPayersSummaries }, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(PayerSearcher);
