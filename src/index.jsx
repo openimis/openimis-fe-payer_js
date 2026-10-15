@@ -13,10 +13,12 @@ import {
   PAYER_PICKER_PROJECTION
 } from "./hooks";
 import { RIGHT_PAYERS } from "./constants";
+import reducer from "./reducer";
 const AccountBalance = GetIconComponent("AccountBalance")
 
 const DEFAULT_CONFIG = {
   "translations": [{ key: "en", messages: messages_en }],
+  "reducers": [{ key: "payer", reducer }],
   "refs": [
     { key: "payer.PayerPicker", ref: PayerPicker },
     { key: "payer.PayerPicker.projection", ref: PAYER_PICKER_PROJECTION },
