@@ -46,8 +46,20 @@ function reducer(
         fetchingPayers: false,
         errorPayers: formatServerError(action.payload),
       };
-    case "PAYER_MUTATION_REQ":
-      return dispatchMutationReq(state, action);
+    case "PAYER_MUTATION_REQ": {
+      // The row carries the id of the mutation changing it: Searcher reads the journal
+      // for that id to lock the row and to re-read the page once it succeeds.
+      // Set on copies: the rows in state must not be written in place.
+      const next = dispatchMutationReq(state, action);
+      const uuids = action.meta?.uuids;
+      if (!uuids?.length || !state.payers) return next;
+      return {
+        ...next,
+        payers: state.payers.map((p) =>
+          uuids.includes(p.uuid) ? { ...p, clientMutationId: action.meta.clientMutationId } : p,
+        ),
+      };
+    }
     case "PAYER_MUTATION_ERR":
       return dispatchMutationErr(state, action);
     case "PAYER_DELETE_RESP":
