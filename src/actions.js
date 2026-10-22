@@ -20,14 +20,10 @@ export function fetchPayersSummaries(modulesManager, params) {
 
 export function deletePayer(modulesManager, payer, clientMutationLabel) {
   const mutation = formatMutation("deletePayer", `uuids: ["${payer.uuid}"]`, clientMutationLabel);
-  // The row carries the id of the mutation changing it; Searcher reads the
-  // journal for that id to lock the row and to re-read the page once it
-  // succeeds. Without this stamp a deleted row just sits there.
-  // eslint-disable-next-line no-param-reassign
-  payer.clientMutationId = mutation.clientMutationId;
   const requestedDateTime = new Date();
   return graphql(mutation.payload, ["PAYER_MUTATION_REQ", "PAYER_DELETE_RESP", "PAYER_MUTATION_ERR"], {
     clientMutationId: mutation.clientMutationId,
+    uuids: [payer.uuid],
     clientMutationLabel,
     requestedDateTime,
   });
