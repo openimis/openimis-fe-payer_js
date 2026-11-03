@@ -190,18 +190,7 @@ export const usePayerCreateMutation = () => {
   return mutation;
 };
 
-export const usePayerDeleteMutation = () => {
-  const mutation = useGraphqlMutation(
-    `
-    mutation usePayerDeleteMutation($input: DeletePayerMutationInput!) {
-      deletePayer(input: $input) {
-        internalId
-        clientMutationId
-      }
-    }
-  `,
-    { onSuccess: (data) => data?.deletePayer },
-  );
-
-  return mutation;
-};
+// usePayerDeleteMutation removed: deleting a payer goes through the Redux
+// action in actions.js, which stamps the row with its clientMutationId so the
+// searcher can lock it and re-read the page when the mutation succeeds. A
+// hook-based delete bypasses that lifecycle entirely.

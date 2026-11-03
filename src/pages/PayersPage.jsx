@@ -11,7 +11,7 @@ import {
 import { styled } from "@mui/material/styles";
 import { useSelector, useDispatch } from "react-redux";
 import { RIGHT_PAYERS_ADD, RIGHT_PAYERS_DELETE, MODULE_NAME } from "../constants";
-import { usePayerDeleteMutation } from "../hooks";
+import { deletePayer } from "../actions";
 import { Fab } from "@mui/material";
 const AddIcon = GetIconComponent("Add")
 import PayerSearcher from "../components/PayerSearcher";
@@ -28,16 +28,17 @@ const PayersPage = (props) => {
   const { formatMessage, formatMessageWithValues } = useTranslations("payer", modulesManager);
   const rights = useSelector((state) => state.core?.user?.i_user?.rights ?? []);
   const module = useSelector((state) => state.core?.savedPagination?.module);
-  const deleteMutation = usePayerDeleteMutation();
   const onDoubleClick = (payer, newTab) =>
     historyPush(modulesManager, history, "payer.payersOverview", [payer.uuid], newTab);
 
-  const onDelete = async ({ uuid, name }) => {
-    await deleteMutation.mutate({
-      uuids: [uuid],
-      clientMutationLabel: formatMessageWithValues("deleteMutation.label", { name }),
-    });
-  };
+  const onDelete = (payer) =>
+    dispatch(
+      deletePayer(
+        modulesManager,
+        payer,
+        formatMessageWithValues("deleteMutation.label", { name: payer.name }),
+      ),
+    );
 
   const canDelete = (payer) => rights.includes(RIGHT_PAYERS_DELETE) && !payer.validityTo;
 
