@@ -17,7 +17,7 @@ const AddIcon = GetIconComponent("Add")
 import PayerSearcher from "../components/PayerSearcher";
 
 const StyledPayersPage = styled('div')(({ theme }) => ({
-  ...theme.page ?? {},
+  ...(theme.page ?? {}),
   '& .fab': theme.fab ?? {},
 }));
 

@@ -8,7 +8,7 @@ import FundingPanel from "./FundingPanel";
 import MainPanelForm from "./MainPanelForm";
 
 const StyledPayerForm = styled('div')(({ theme }) => ({
-  ...theme.page ?? {},
+  ...(theme.page ?? {}),
   '&.locked': theme.page?.locked ?? {},
 }));
 const ReplayIcon = GetIconComponent("Replay")
